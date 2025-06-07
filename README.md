@@ -319,11 +319,11 @@ metadata:
   name: app-pod
 spec:
   containers:
-  - name: app
-    image: nginx:alpine
-    envFrom:
-    - configMapRef:
-        name: app-config
+    - name: app
+      image: nginx:alpine
+      envFrom:
+        - configMapRef:
+            name: app-config
 EOF
 
 kubectl apply -f pod-with-config.yaml
