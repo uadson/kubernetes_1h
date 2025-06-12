@@ -38,12 +38,18 @@ docker run hello-world
 
 ### 2. Instalar kubectl
 ```bash
-# Baixar kubectl
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+# Verifique a versão estável mais recente:
+[https://kubernetes.io/releases/download/](https://kubernetes.io/releases/download/)
+
+# Baixar versão mais recente
+curl -LO "https://dl.k8s.io/release/v1.33.0/bin/linux/amd64/kubectl"
 
 # Tornar executável e mover para PATH
 chmod +x kubectl
-sudo mv kubectl /usr/local/bin/
+
+# Mover para /usr/local/bin
+sudo mv kubectl /usr/local/bin/kubectl
+
 
 # Verificar instalação
 kubectl version --client

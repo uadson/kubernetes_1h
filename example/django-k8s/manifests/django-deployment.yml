@@ -64,6 +64,9 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_DB
+          volumeMounts:
+            - name: static-files
+              mountPath: /app/staticfiles
       containers:
         - name: django
           image: django_k8s:v1.0
@@ -80,6 +83,11 @@ spec:
                 configMapKeyRef:
                   name: django-config
                   key: ALLOWED_HOSTS
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: django-secret
+                  key: SECRET_KEY
             - name: POSTGRES_HOST
               valueFrom:
                 configMapKeyRef:
@@ -105,7 +113,6 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_DB
-          # Comando para produção com Gunicorn
           command: ["gunicorn"]
           args:
             [
@@ -128,17 +135,31 @@ spec:
               port: 8000
             initialDelaySeconds: 30
             periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
           livenessProbe:
             httpGet:
               path: /health/
               port: 8000
             initialDelaySeconds: 60
             periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
           volumeMounts:
             - name: static-files
               mountPath: /app/staticfiles
             - name: media-files
               mountPath: /app/media
+      # Adicionar tolerância para problemas de scheduling
+      tolerations:
+        - key: "node.kubernetes.io/not-ready"
+          operator: "Exists"
+          effect: "NoExecute"
+          tolerationSeconds: 300
+        - key: "node.kubernetes.io/unreachable"
+          operator: "Exists"
+          effect: "NoExecute"
+          tolerationSeconds: 300
       volumes:
         - name: static-files
           emptyDir: {}
