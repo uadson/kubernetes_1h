@@ -16,12 +16,12 @@ spec:
     spec:
       initContainers:
         - name: django-migrate
-          image: django_k8s:latest
+          image: django_k8s:v1.0
           command:
             [
               "sh",
               "-c",
-              "uv run python manage.py migrate && python manage.py collectstatic --noinput",
+              "python manage.py migrate && python manage.py collectstatic --no-input",
             ]
           env:
             - name: DEBUG
@@ -34,6 +34,11 @@ spec:
                 configMapKeyRef:
                   name: django-config
                   key: ALLOWED_HOSTS
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: django-secret
+                  key: SECRET_KEY
             - name: POSTGRES_HOST
               valueFrom:
                 configMapKeyRef:
@@ -61,7 +66,7 @@ spec:
                   key: POSTGRES_DB
       containers:
         - name: django
-          image: django_k8s:latest
+          image: django_k8s:v1.0
           ports:
             - containerPort: 8000
           env:
@@ -101,7 +106,7 @@ spec:
                   name: postgres-secret
                   key: POSTGRES_DB
           # Comando para produção com Gunicorn
-          command: ["uv", "run", "gunicorn"]
+          command: ["gunicorn"]
           args:
             [
               "--bind",

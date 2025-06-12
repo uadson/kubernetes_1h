@@ -36,6 +36,7 @@ echo "🚀 Deploying Django + PostgreSQL + Nginx Stack..."
 # Aplicar secrets e configs primeiro
 echo "📝 Applying configs and secrets..."
 kubectl apply -f manifests/postgres-secret.yml
+kubectl apply -f manifests/django-secret.yml
 kubectl apply -f manifests/django-config.yml
 kubectl apply -f manifests/nginx-config.yml
 

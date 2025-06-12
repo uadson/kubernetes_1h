@@ -17,7 +17,7 @@ COPY ./requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiar código da aplicação
-COPY ./django_k8s/ .
+COPY ./django_k8s/ /app
 
 # Coletar arquivos estáticos
 RUN python manage.py collectstatic --noinput
@@ -31,4 +31,4 @@ USER app
 EXPOSE 8000
 
 # Comando padrão
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "django_k8s.wsgi:application"]
+CMD ["gunicorn", "django_k8s.wsgi:application", "--bind", "0.0.0.0:8000"]

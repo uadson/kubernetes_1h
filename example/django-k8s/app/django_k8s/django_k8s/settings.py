@@ -1,5 +1,9 @@
+import environ
+import os
 from pathlib import Path
-from decouple import config, Csv
+
+env = environ.Env()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,15 +13,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config(
-    "SECRET_KEY",
-    default="django-insecure-1*k-r3-o9=x)+)l&mvbx7!k#70(5!gxi-!gyoan8t8^!_=p=e3",
+SECRET_KEY = os.getenv(
+    "SECRET_KEY", "django-insecure-1*k-r3-o9=x)+)l&mvbx7!k#70(5!gxi-!gyoan8t8^!_=p=e3"
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", cast=bool, default=True)
+DEBUG = os.getenv("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv(), default="localhost")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost").split(",")
 
 
 # Application definition
@@ -67,11 +70,11 @@ WSGI_APPLICATION = "django_k8s.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("POSTGRES_DB", default="django_db"),
-        "USER": config("POSTGRES_USER", default="postgres"),
-        "PASSWORD": config("POSTGRES_PASSWORD", default=""),
-        "HOST": config("POSTGRES_HOST", default="localhost"),
-        "PORT": config("POSTGRES_PORT", default="5432"),
+        "NAME": os.getenv("POSTGRES_DB", "django_db"),
+        "USER": os.getenv("POSTGRES_USER", "postgres"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", ""),
+        "HOST": os.getenv("POSTGRES_HOST", "localhost"),
+        "PORT": os.getenv("POSTGRES_PORT", "5432"),
     }
 }
 
